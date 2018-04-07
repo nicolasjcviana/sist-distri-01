@@ -1,8 +1,13 @@
 package servidor;
 
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.UUID;
+
+import model.Message;
+import model.ServiceConstants;
+import model.ServicoBackupInfo;
+import util.Util;
 
 public class ServidorIdentificacaoResponse extends Thread {
 	InetAddress ip; 
@@ -17,11 +22,22 @@ public class ServidorIdentificacaoResponse extends Thread {
 	
 	@Override
 	public void run() {
-		// envia resposta q
-		pacoteResposta.getAddress();
-		pacoteResposta.getPort();
+		InetAddress addressResposta = pacoteResposta.getAddress();
+		int portaResposta = pacoteResposta.getPort();
 		
-		UUID.randomUUID();
+		try {
+			Message message = new Message(ServiceConstants.BUSCAR_IDENTIFICACAO_RESPONSE, new ServicoBackupInfo(addressResposta, portaServicoBackup));
+			byte[] data = Util.convertMessageToData(message); 
+			DatagramPacket pacote = new DatagramPacket( data,
+                     data.length,
+                     addressResposta,
+                     portaResposta );
+		
+			DatagramSocket socket = new DatagramSocket();
+			socket.send(pacote);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 	}
 

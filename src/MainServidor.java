@@ -1,7 +1,5 @@
 import java.io.IOException;
-import java.net.UnknownHostException;
 
-import cliente.Cliente;
 import servidor.ServidorBackup;
 
 public class MainServidor {

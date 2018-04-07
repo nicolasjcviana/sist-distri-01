@@ -1,14 +1,13 @@
 package servidor;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
 import model.Message;
 import model.ServiceConstants;
+import util.Util;
 
 public class ServidorBackup {
 
@@ -28,10 +27,8 @@ public class ServidorBackup {
             byte[] buffer = new byte[BUFFER];
             DatagramPacket pacoteRecebido = new DatagramPacket(buffer, BUFFER, group, porta);
 			socket.receive(pacoteRecebido);
-            ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-            ObjectInputStream ois = new ObjectInputStream(bais);
             try {
-				Message mensagem = (Message) ois.readObject();
+            	Message mensagem = Util.convertDataToMessage(buffer);
 				if (mensagem.getPrimitive().equals(ServiceConstants.BUSCAR_IDENTIFICACAO)) {
 					new ServidorIdentificacaoResponse(socket.getInetAddress(), porta, pacoteRecebido).start();
 				}
@@ -39,9 +36,7 @@ public class ServidorBackup {
 			} catch (ClassNotFoundException e) {
 				System.err.println("Erro ao realizar leitura do objeto");
 			}
-            	
- 
         }
 	}
-	
+
 }
