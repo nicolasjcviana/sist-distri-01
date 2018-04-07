@@ -22,19 +22,21 @@ public class Cliente {
 	}
 
 	private void identificarServidor() throws IOException {
-		MulticastSocket socket = new MulticastSocket();
-		InetAddress grupo = InetAddress.getByName("224.0.0.0");
-		socket.joinGroup(grupo);
-
-		Message mensagem = new Message(ServiceConstants.BUSCAR_IDENTIFICACAO, null);
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(baos);
-		oos.writeObject(mensagem);
-		byte[] data = baos.toByteArray();
-
-		DatagramPacket sendPacket = new DatagramPacket(data, data.length, grupo, 1500);
-		socket.send(sendPacket);
+        String multiCastAddress = "224.0.0.1";
+        final int multiCastPort = 52684;
+ 
+        InetAddress group = InetAddress.getByName(multiCastAddress);
+        MulticastSocket s = new MulticastSocket(multiCastPort);
+        s.joinGroup(group);
+ 
+        Message message = new Message(ServiceConstants.BUSCAR_IDENTIFICACAO, null);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(message);
+        byte[] data = baos.toByteArray();
+ 
+        s.send(new DatagramPacket(data, data.length, group, multiCastPort));
+        
 	}
 
 }
