@@ -26,7 +26,7 @@ public class ServidorIdentificacaoResponse extends Thread {
 		int portaResposta = pacoteResposta.getPort();
 		
 		try {
-			Message message = new Message(ServiceConstants.BUSCAR_IDENTIFICACAO_RESPONSE, new ServicoBackupInfo(addressResposta, portaServicoBackup));
+			Message message = new Message(ServiceConstants.BUSCAR_IDENTIFICACAO_RESPONSE, new ServicoBackupInfo(ip, portaServicoBackup));
 			byte[] data = Util.convertMessageToData(message); 
 			DatagramPacket pacote = new DatagramPacket( data,
                      data.length,
@@ -35,6 +35,8 @@ public class ServidorIdentificacaoResponse extends Thread {
 		
 			DatagramSocket socket = new DatagramSocket();
 			socket.send(pacote);
+			System.out.println("Resposta enviada para ip " + addressResposta + " e porta " + portaResposta);
+			socket.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
